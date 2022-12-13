@@ -485,9 +485,11 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     #screwTransformName = self.ui.needleTransformComboBox.currentNode().GetName()
     self.screwNumber = self.screwNumber + 1
     screwTransformName = "Screw-" + str(self.screwNumber) + "_T"
-    self.logic.LoadScrewModel(screwName, screwTransformName)
+    screwNode = self.logic.LoadScrewModel(screwName, screwTransformName)
     screwTransformNode = slicer.util.getFirstNodeByName(screwTransformName)
     self.ui.needleTransformComboBox.setCurrentNode(screwTransformNode)
+    # set the screw parameters as an attribute of the model
+    screwNode.SetAttribute("ScrewNumber", screwName)
 
 
 
@@ -732,6 +734,7 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     screwNode.SetName(screwName)
     # set model slice visibility on
     screwNode.GetModelDisplayNode().SetSliceIntersectionVisibility(True)
+    return screwNode
 
 
   def LoadModelFromFile(self, modelFileName, colorRGB_array, visibility_bool):
