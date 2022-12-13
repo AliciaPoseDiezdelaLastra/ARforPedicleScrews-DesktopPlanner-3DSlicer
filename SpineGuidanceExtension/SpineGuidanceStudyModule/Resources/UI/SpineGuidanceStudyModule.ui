@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>450</width>
-    <height>724</height>
+    <height>737</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -346,6 +346,9 @@ p, li { white-space: pre-wrap; }
      <property name="text">
       <string>Saving Results</string>
      </property>
+     <property name="collapsed">
+      <bool>true</bool>
+     </property>
      <layout class="QFormLayout" name="formLayout_2">
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
@@ -376,19 +379,6 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="ctkCollapsibleButton" name="CollapsibleButton">
@@ -572,6 +562,19 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

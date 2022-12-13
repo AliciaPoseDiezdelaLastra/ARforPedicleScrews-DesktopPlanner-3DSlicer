@@ -54,6 +54,7 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.logic = None
     self._parameterNode = None
     self._updatingGUIFromParameterNode = False
+    self.screwNumber = 0
 
   def setup(self):
     """
@@ -180,7 +181,7 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     # Make sure parameter node exists and observed
     self.initializeParameterNode()
     # change to custom double 3D view here
-    self.resetViews()
+    # self.resetViews()
 
   def exit(self):
     """
@@ -325,7 +326,7 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.updateWidgetsForCurrentVolume()
 
     # Make sure volume has a volume rendering display node, and display is visible in all 3D views
-
+    '''
     volumeRenderingLogic = slicer.modules.volumerendering.logic()
     displayNode = volumeRenderingLogic.GetFirstVolumeRenderingDisplayNode(selectedNode)
     if displayNode is None:
@@ -334,8 +335,9 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
       displayNode = volumeRenderingLogic.GetFirstVolumeRenderingDisplayNode(selectedNode)
 
     displayNode.SetViewNodeIDs([])  # Empty list means all views
+    '''
 
-    self.resetViews()
+    # self.resetViews()
 
   def onNeedleTransformSelected(self, selectedNode):
     if self._parameterNode is None or self._updatingGUIFromParameterNode:
@@ -348,6 +350,8 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
 
     self.logic.updateParameterNodeFromTransform()
     self.logic.updateTransformFromParameterNode()
+
+    self.logic.ResliceDriverToScrew(selectedNode.GetID())
 
   # Scene selection
   def onPreviousButton(self):
@@ -431,16 +435,16 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.ui.upDownSlider.value = self.ui.upDownSlider.value - self.logic.STEP_SIZE_TRANSLATION
 
   def onInButton(self):
-    self.logic.moveNeedleIn(-1)
-
-  def onInLargeButton(self):
-    self.logic.moveNeedleIn(-10)
-
-  def onOutButton(self):
     self.logic.moveNeedleIn(1)
 
-  def onOutLargeButton(self):
+  def onInLargeButton(self):
     self.logic.moveNeedleIn(10)
+
+  def onOutButton(self):
+    self.logic.moveNeedleIn(-1)
+
+  def onOutLargeButton(self):
+    self.logic.moveNeedleIn(-10)
 
   # Rotation
   def onCranialRotationButton(self):
@@ -478,8 +482,13 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
   def onLoadModelButtonClicked(self):
     self.updateParameterNodeFromGUI()
     screwName = self.ui.modelNameBox.currentText
-    screwTransformName = self.ui.needleTransformComboBox.currentNode().GetName()
+    #screwTransformName = self.ui.needleTransformComboBox.currentNode().GetName()
+    self.screwNumber = self.screwNumber + 1
+    screwTransformName = "Screw-" + str(self.screwNumber) + "_T"
     self.logic.LoadScrewModel(screwName, screwTransformName)
+    screwTransformNode = slicer.util.getFirstNodeByName(screwTransformName)
+    self.ui.needleTransformComboBox.setCurrentNode(screwTransformNode)
+
 
 
 
@@ -505,6 +514,10 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
   PARTICIPANT_ID = "ParticipantID"
   CURRENT_TASK_SETTING = 'SpineGuidance/CurrentTask'
   TASK_NAME = "TaskName"
+
+  ############ ALI ##############
+  screwNumber = 0
+  ########### FIN ALI ###########
 
   def __init__(self):
     """
@@ -552,6 +565,7 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     # NeedleModel
 
     # If NeedleModel is not in the scene, create and add it
+    '''
     needleModel = slicer.util.getFirstNodeByName(self.NEEDLE_MODEL)
     if needleModel is None:
       createModelsLogic = slicer.modules.createmodels.logic()
@@ -586,6 +600,7 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     pointList_NeedleTipTransform = pointList_NeedleTip.GetParentTransformNode()
     if pointList_NeedleTipTransform is None:
       pointList_NeedleTip.SetAndObserveTransformNodeID(needleToRasTransform.GetID())
+      '''
 
 
     ##################### ALI ######################
@@ -709,11 +724,14 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     screwNode = self.LoadModelFromFile(screwFileName, [0,0.7251529,0.945098], True)
     rotationT = vtk.vtkTransform()
     rotationT.RotateX(-90)
+    rotationT.RotateZ(180)
     t90Node.SetAndObserveTransformToParent(rotationT) 
     self.ApplyTransformToObject(screwNode, t90NodeName)
     screwNode.HardenTransform()
     self.ApplyTransformToObject(screwNode, transformName)
     screwNode.SetName(screwName)
+    # set model slice visibility on
+    screwNode.GetModelDisplayNode().SetSliceIntersectionVisibility(True)
 
 
   def LoadModelFromFile(self, modelFileName, colorRGB_array, visibility_bool):
@@ -755,6 +773,28 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     object.SetAndObserveTransformNodeID(self.transform.GetID())
     
     print ('Transform ' + transformName + ' applied to ' + object.GetName())
+
+  def ResliceDriverToScrew(self, transformID):
+    
+    #Get the volume reslice logic
+    resliceLogic = slicer.modules.volumereslicedriver.logic()
+
+    #Get the red slice node
+    redSliceName = "Red"
+    redSliceNode = slicer.app.layoutManager().sliceWidget(redSliceName).mrmlSliceNode()
+ 
+    #Set the driver as the volume and the reslice mode as inplane
+    resliceLogic.SetDriverForSlice(transformID, redSliceNode)
+    resliceLogic.SetModeForSlice(resliceLogic.MODE_INPLANE, redSliceNode)
+
+    #Get the green slice node
+    greenSliceName = "Green"
+    greenSliceNode = slicer.app.layoutManager().sliceWidget(greenSliceName).mrmlSliceNode()
+
+    #Set the driver as the volume and the reslice mode as transverse
+    resliceLogic.SetDriverForSlice(transformID, greenSliceNode)
+    resliceLogic.SetModeForSlice(resliceLogic.MODE_INPLANE90, greenSliceNode)
+
 
 #
 # SpineGuidanceStudyModuleTest
