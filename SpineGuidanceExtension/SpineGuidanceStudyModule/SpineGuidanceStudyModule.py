@@ -7,7 +7,7 @@ import vtk
 import slicer
 from slicer.ScriptedLoadableModule import *
 from slicer.util import VTKObservationMixin
-
+import time
 
 #
 # SpineGuidanceStudyModule
@@ -94,6 +94,7 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.ui.spineModelComboBox.connect('currentNodeChanged(vtkMRMLNode*)', self.onSpineModelSelected)
     
     # SCREW SELECTION
+    # The screw length and diameter are initizalied in the wigit viewer directly
     ##################### ALI ####################
     self.ui.loadModelButton.connect('clicked(bool)', self.onLoadModelButtonClicked)
     ################## FIN ALI ####################
@@ -459,7 +460,12 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
 
   def onLoadModelButtonClicked(self):
     self.updateParameterNodeFromGUI()
-    screwName = self.ui.modelNameBox.currentText
+    # screwName = self.ui.modelNameBox.currentText
+    # Get the screw name from the length and diameter boxes instead
+    screwLength = self.ui.screwLengthBox.currentText
+    screwDiameter = self.ui.screwDiameterBox.currentText
+    # If D = 5 and L = 30, then screwName = D5L30
+    screwName = "D" + screwDiameter + "L" + screwLength
     #screwTransformName = self.ui.needleTransformComboBox.currentNode().GetName()
     self.screwNumber = self.screwNumber + 1
     screwTransformName = "Screw-" + str(self.screwNumber) + "_T"
@@ -661,29 +667,35 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
   def saveResults(self):
     ''' 
     Save the results to a file:
-    - NeedleToRasTransform
-    Save in format:
-    NeedleToRas_ParticipantID.h5
+    - The scene as a .mrb file
+
     '''
     # Get the parameter node
     parameterNode = self.getParameterNode()
 
-    # Get the NeedleToRasTransform maxtrix node to save
-    needleToRasTransformNode = parameterNode.GetNodeReference(self.NEEDLE_TO_RAS_TRANSFORM)
-    
-    # Format the name of the file
+    # FILENAME FORMAT = [Date]_ScrewPlanner_[userID]_[participantID].mrb
+    # Get the date in format MMMDD
+    date = time.strftime("%b%d")
+    # Get the user ID
+    userID = parameterNode.GetParameter(self.USER_ID)
     # Get the participant ID
     participantID = parameterNode.GetParameter(self.PARTICIPANT_ID)
-    # Get the transform name
-    transformName = needleToRasTransformNode.GetName()
     # Get the file name
-    fileName = transformName + "_" + participantID + ".h5"
+    fileName = date + "_ScrewPlanner_" + userID + "_" + participantID + ".mrb"
+    
     # Get the Save Directory from slicer settings
     settings = slicer.app.userSettings()
     saveDirectory = settings.value(self.RESULTS_SAVE_DIRECTORY_SETTING)
 
-    # Save the NeedleToRasTransform to saveDirectory with fileName
-    slicer.util.saveNode(needleToRasTransformNode, os.path.join(saveDirectory, fileName))
+    print("Save Directory: " + saveDirectory)
+    print( "File Name: " + fileName)
+
+
+    # # Save the NeedleToRasTransform to saveDirectory with fileName
+    # slicer.util.saveNode(needleToRasTransformNode, os.path.join(saveDirectory, fileName))
+
+    # Save the current scene to saveDirectory with fileName
+    slicer.util.saveScene(os.path.join(saveDirectory, fileName))
 
 
   ################### ALI ###################

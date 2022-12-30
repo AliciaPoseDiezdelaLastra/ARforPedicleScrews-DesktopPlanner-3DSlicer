@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>533</width>
-    <height>876</height>
+    <height>871</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -44,6 +44,9 @@ p, li { white-space: pre-wrap; }
       </item>
       <item row="1" column="2">
        <widget class="qMRMLNodeComboBox" name="usVolumeComboBox">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
         <property name="nodeTypes">
          <stringlist notr="true">
           <string>vtkMRMLScalarVolumeNode</string>
@@ -61,8 +64,11 @@ p, li { white-space: pre-wrap; }
        <widget class="qMRMLNodeComboBox" name="spineModelComboBox">
         <property name="nodeTypes">
          <stringlist notr="true">
-          <string>vtkMRMLScalarVolumeNode</string>
+          <string>vtkMRMLModelNode</string>
          </stringlist>
+        </property>
+        <property name="showHidden">
+         <bool>false</bool>
         </property>
         <property name="hideChildNodeTypes">
          <stringlist notr="true"/>
@@ -87,148 +93,87 @@ p, li { white-space: pre-wrap; }
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="4" column="1">
-       <widget class="qMRMLNodeComboBox" name="needleTransformComboBox">
-        <property name="nodeTypes">
-         <stringlist notr="true">
-          <string>vtkMRMLLinearTransformNode</string>
-         </stringlist>
-        </property>
-        <property name="hideChildNodeTypes">
-         <stringlist notr="true"/>
-        </property>
-        <property name="renameEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="interactionNodeSingletonTag">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_5">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Model</string>
+         <string>Screw Diameter</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="screwDiameterBox">
+        <property name="currentText">
+         <string>4.5</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>4.5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_8">
         <property name="text">
-         <string>Screw transform: </string>
+         <string>Screw length</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="2" column="1">
        <widget class="QPushButton" name="loadModelButton">
         <property name="text">
          <string>Load screw model</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="modelNameBox">
+      <item row="0" column="1">
+       <widget class="QComboBox" name="screwLengthBox">
         <property name="currentText">
-         <string>D4.5L30</string>
+         <string>30</string>
         </property>
         <item>
          <property name="text">
-          <string>D4.5L30</string>
+          <string>30</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>D4.5L35</string>
+          <string>35</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>D4.5L40</string>
+          <string>40</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>D4.5L45</string>
+          <string>45</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>D4.5L50</string>
+          <string>50</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>D4.5L55</string>
+          <string>55</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>D4.5L60</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L30</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L35</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L45</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L50</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L55</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L60</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L30</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L35</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L40</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L45</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L50</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L55</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L60</string>
+          <string>60</string>
          </property>
         </item>
        </widget>
@@ -569,6 +514,31 @@ p, li { white-space: pre-wrap; }
       <item row="5" column="1">
        <widget class="QLineEdit" name="participantIDLineEdit"/>
       </item>
+      <item row="9" column="1">
+       <widget class="qMRMLNodeComboBox" name="needleTransformComboBox">
+        <property name="nodeTypes">
+         <stringlist notr="true">
+          <string>vtkMRMLLinearTransformNode</string>
+         </stringlist>
+        </property>
+        <property name="hideChildNodeTypes">
+         <stringlist notr="true"/>
+        </property>
+        <property name="renameEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="interactionNodeSingletonTag">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Screw transform: </string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -652,6 +622,22 @@ p, li { white-space: pre-wrap; }
     <hint type="destinationlabel">
      <x>431</x>
      <y>677</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>SpineGuidanceStudyModule</sender>
+   <signal>mrmlSceneChanged(vtkMRMLScene*)</signal>
+   <receiver>spineModelComboBox</receiver>
+   <slot>setMRMLScene(vtkMRMLScene*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>266</x>
+     <y>435</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>290</x>
+     <y>105</y>
     </hint>
    </hints>
   </connection>
