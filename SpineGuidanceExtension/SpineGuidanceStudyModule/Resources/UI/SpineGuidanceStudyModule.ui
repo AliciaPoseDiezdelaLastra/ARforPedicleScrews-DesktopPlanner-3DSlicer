@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>737</height>
+    <width>533</width>
+    <height>876</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -17,45 +17,221 @@
       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:9.75pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:7pt; font-weight:600;&quot;&gt;Welcome to the spine guidance study&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:5.5pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:7pt; font-weight:600;&quot;&gt;Pedicle screw placement planner&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="ctkCollapsibleButton" name="inputsCollapsibleButton">
      <property name="text">
-      <string>Scene Selection</string>
+      <string>Volume selection</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="2">
-       <widget class="QPushButton" name="nextButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string>Run the algorithm.</string>
-        </property>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Next</string>
+         <string>Spine model</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QPushButton" name="previousButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string>Run the algorithm.</string>
-        </property>
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>Previous</string>
+         <string>Input volume</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="ctkPathLineEdit" name="taskSelector"/>
+      <item row="1" column="2">
+       <widget class="qMRMLNodeComboBox" name="usVolumeComboBox">
+        <property name="nodeTypes">
+         <stringlist notr="true">
+          <string>vtkMRMLScalarVolumeNode</string>
+         </stringlist>
+        </property>
+        <property name="hideChildNodeTypes">
+         <stringlist notr="true"/>
+        </property>
+        <property name="interactionNodeSingletonTag">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="qMRMLNodeComboBox" name="spineModelComboBox">
+        <property name="nodeTypes">
+         <stringlist notr="true">
+          <string>vtkMRMLScalarVolumeNode</string>
+         </stringlist>
+        </property>
+        <property name="hideChildNodeTypes">
+         <stringlist notr="true"/>
+        </property>
+        <property name="interactionNodeSingletonTag">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="ctkCollapsibleButton" name="CollapsibleButton">
+     <property name="text">
+      <string>Screw Selection</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="collapsed">
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="4" column="1">
+       <widget class="qMRMLNodeComboBox" name="needleTransformComboBox">
+        <property name="nodeTypes">
+         <stringlist notr="true">
+          <string>vtkMRMLLinearTransformNode</string>
+         </stringlist>
+        </property>
+        <property name="hideChildNodeTypes">
+         <stringlist notr="true"/>
+        </property>
+        <property name="renameEnabled">
+         <bool>true</bool>
+        </property>
+        <property name="interactionNodeSingletonTag">
+         <string notr="true"/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Model</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Screw transform: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="loadModelButton">
+        <property name="text">
+         <string>Load screw model</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QComboBox" name="modelNameBox">
+        <property name="currentText">
+         <string>D4.5L30</string>
+        </property>
+        <item>
+         <property name="text">
+          <string>D4.5L30</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D4.5L35</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D4.5L40</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D4.5L45</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D4.5L50</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D4.5L55</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D4.5L60</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D5L30</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D5L35</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D5L45</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D5L50</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D5L55</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D5L60</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L30</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L35</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L40</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L45</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L50</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L55</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>D6L60</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -82,6 +258,44 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>Left</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="upButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string>Run the algorithm.</string>
+        </property>
+        <property name="text">
+         <string>Up</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="ctkSliderWidget" name="leftRightSlider">
+        <property name="toolTip">
+         <string>Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.</string>
+        </property>
+        <property name="decimals">
+         <number>0</number>
+        </property>
+        <property name="singleStep">
+         <double>1.000000000000000</double>
+        </property>
+        <property name="minimum">
+         <double>-100.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="tracking">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -164,31 +378,6 @@ p, li { white-space: pre-wrap; }
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="ctkSliderWidget" name="leftRightSlider">
-        <property name="toolTip">
-         <string>Set threshold value for computing the output image. Voxels that have intensities lower than this value will set to zero.</string>
-        </property>
-        <property name="decimals">
-         <number>0</number>
-        </property>
-        <property name="singleStep">
-         <double>1.000000000000000</double>
-        </property>
-        <property name="minimum">
-         <double>-100.000000000000000</double>
-        </property>
-        <property name="maximum">
-         <double>100.000000000000000</double>
-        </property>
-        <property name="value">
-         <double>0.000000000000000</double>
-        </property>
-        <property name="tracking">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="1">
        <widget class="QPushButton" name="downButton">
         <property name="enabled">
@@ -199,19 +388,6 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>Down</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="upButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="toolTip">
-         <string>Run the algorithm.</string>
-        </property>
-        <property name="text">
-         <string>Up</string>
         </property>
        </widget>
       </item>
@@ -343,47 +519,11 @@ p, li { white-space: pre-wrap; }
    </item>
    <item>
     <widget class="ctkCollapsibleButton" name="CollapsibleButton_2">
-     <property name="text">
-      <string>Saving Results</string>
-     </property>
-     <property name="collapsed">
+     <property name="enabled">
       <bool>true</bool>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Save Location</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="ctkDirectoryButton" name="saveDirectoryButton"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Participant ID</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QPushButton" name="saveButton">
-        <property name="text">
-         <string>Save Results</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="participantIDLineEdit"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="ctkCollapsibleButton" name="CollapsibleButton">
      <property name="text">
-      <string>Settings</string>
+      <string>Saving Results</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -391,174 +531,43 @@ p, li { white-space: pre-wrap; }
      <property name="collapsed">
       <bool>false</bool>
      </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="7" column="1">
+       <widget class="QPushButton" name="saveButton">
         <property name="text">
-         <string>US volume: </string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="qMRMLNodeComboBox" name="usVolumeComboBox">
-        <property name="nodeTypes">
-         <stringlist notr="true">
-          <string>vtkMRMLScalarVolumeNode</string>
-         </stringlist>
-        </property>
-        <property name="hideChildNodeTypes">
-         <stringlist notr="true"/>
-        </property>
-        <property name="interactionNodeSingletonTag">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Screw transform: </string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="qMRMLNodeComboBox" name="needleTransformComboBox">
-        <property name="nodeTypes">
-         <stringlist notr="true">
-          <string>vtkMRMLLinearTransformNode</string>
-         </stringlist>
-        </property>
-        <property name="hideChildNodeTypes">
-         <stringlist notr="true"/>
-        </property>
-        <property name="renameEnabled">
-         <bool>true</bool>
-        </property>
-        <property name="interactionNodeSingletonTag">
-         <string notr="true"/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Model</string>
+         <string>Save Results</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="modelNameBox">
-        <property name="currentText">
-         <string>D4.5L30</string>
+       <widget class="QLineEdit" name="userIDLineEdit"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="ctkDirectoryButton" name="saveDirectoryButton"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Save Location</string>
         </property>
-        <item>
-         <property name="text">
-          <string>D4.5L30</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D4.5L35</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D4.5L40</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D4.5L45</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D4.5L50</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D4.5L55</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D4.5L60</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L30</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L35</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L45</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L50</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L55</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D5L60</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L30</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L35</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L40</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L45</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L50</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L55</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>D6L60</string>
-         </property>
-        </item>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="loadModelButton">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Load model</string>
+         <string>User ID</string>
         </property>
        </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Patient ID</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="participantIDLineEdit"/>
       </item>
      </layout>
     </widget>
@@ -594,11 +603,6 @@ p, li { white-space: pre-wrap; }
    <class>ctkFittedTextBrowser</class>
    <extends>QTextBrowser</extends>
    <header>ctkFittedTextBrowser.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ctkPathLineEdit</class>
-   <extends>QWidget</extends>
-   <header>ctkPathLineEdit.h</header>
   </customwidget>
   <customwidget>
    <class>ctkSliderWidget</class>

@@ -20,8 +20,8 @@ class SpineGuidanceStudyModule(ScriptedLoadableModule):
 
   def __init__(self, parent):
     ScriptedLoadableModule.__init__(self, parent)
-    self.parent.title = "Spine guidance simulation study"
-    self.parent.categories = ["Ultrasound"]
+    self.parent.title = "Pedicle screw insertion study"
+    self.parent.categories = ["Ultrasound_new"]
     self.parent.dependencies = []  # TODO: add here list of module names that this module requires
     self.parent.contributors = ["David Morton (Perk Lab)"]
     self.parent.helpText = """
@@ -88,19 +88,19 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
 
     # These connections ensure that whenever user changes some settings on the GUI, that is saved in the MRML scene
     # (in the selected parameter node).
-    self.ui.taskSelector.connect('currentPathChanged(QString)', self.onTaskChanged)
-    # Scene selection
-    self.ui.previousButton.connect('clicked(bool)', self.onPreviousButton)
-    self.ui.nextButton.connect('clicked(bool)', self.onNextButton)
-
-    self.ui.resetNeedleButton.connect('clicked(bool)', self.onResetNeedleButton)
-    self.ui.resetViewsButton.connect('clicked(bool)', self.resetViews)
-
+    
+    # VOLUME SELECTION
     self.ui.usVolumeComboBox.connect('currentNodeChanged(vtkMRMLNode*)', self.onUsVolumeSelected)
+    self.ui.spineModelComboBox.connect('currentNodeChanged(vtkMRMLNode*)', self.onSpineModelSelected)
+    
+    # SCREW SELECTION
+    ##################### ALI ####################
+    self.ui.loadModelButton.connect('clicked(bool)', self.onLoadModelButtonClicked)
+    ################## FIN ALI ####################
     self.ui.needleTransformComboBox.connect('currentNodeChanged(vtkMRMLNode*)', self.onNeedleTransformSelected)
 
-    # Translation
 
+    # Translation
     self.ui.leftButton.connect('clicked(bool)', self.onLeftButton)
     self.ui.rightButton.connect('clicked(bool)', self.onRightButton)
     self.ui.upButton.connect('clicked(bool)', self.onUpButton)
@@ -109,28 +109,26 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.ui.outButton.connect('clicked(bool)', self.onOutButton)
     self.ui.needleInLargeButton.connect('clicked(bool)', self.onInLargeButton)
     self.ui.needleOutLargeButton.connect('clicked(bool)', self.onOutLargeButton)
-
     # Rotation
     self.ui.cranialRotationButton.connect('clicked(bool)', self.onCranialRotationButton)
     self.ui.caudalRotationButton.connect('clicked(bool)', self.onCaudalRotationButton)
     self.ui.leftRotationButton.connect('clicked(bool)', self.onLeftRotationButton)
     self.ui.rightRotationButton.connect('clicked(bool)', self.onRightRotationButton)
-
     # Slider changes
-
     self.ui.leftRightSlider.connect("valueChanged(double)", self.updateParameterNodeFromGUI)
     self.ui.upDownSlider.connect("valueChanged(double)", self.updateParameterNodeFromGUI)
     self.ui.cranialRotationSlider.connect("valueChanged(double)", self.updateParameterNodeFromGUI)
     self.ui.leftRotationSlider.connect("valueChanged(double)", self.updateParameterNodeFromGUI)
 
-    # Saving
+    # Reset buttons
+    self.ui.resetNeedleButton.connect('clicked(bool)', self.onResetNeedleButton)
+    self.ui.resetViewsButton.connect('clicked(bool)', self.resetViews)
+    
+    # SAVING RESULTS
     self.ui.saveDirectoryButton.connect('directorySelected(QString)', self.onSaveDirectoryChanged)
+    self.ui.userIDLineEdit.connect('textChanged(QString)', self.onUserIDChanged)
     self.ui.participantIDLineEdit.connect('textChanged(QString)', self.onParticipantIDChanged)
     self.ui.saveButton.connect('clicked(bool)', self.onSaveButton)
-
-    ##################### ALI ####################
-    self.ui.loadModelButton.connect('clicked(bool)', self.onLoadModelButtonClicked)
-    ################## FIN ALI ####################
 
     # Make sure parameter node is initialized (needed for module reload)
     self.initializeParameterNode()
@@ -143,9 +141,6 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     settings = slicer.app.userSettings()
     if settings.value(self.logic.RESULTS_SAVE_DIRECTORY_SETTING): # if the settings exists
       self.ui.saveDirectoryButton.directory = settings.value(self.logic.RESULTS_SAVE_DIRECTORY_SETTING)
-    # initailize the path to current task using settings
-    if settings.value(self.logic.CURRENT_TASK_SETTING): # if the settings exists
-      self.ui.taskSelector.setCurrentPath(settings.value(self.logic.CURRENT_TASK_SETTING))
 
   def setupCustomLayout(self):
     customLayout = \
@@ -325,19 +320,14 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
 
     self.updateWidgetsForCurrentVolume()
 
-    # Make sure volume has a volume rendering display node, and display is visible in all 3D views
-    '''
-    volumeRenderingLogic = slicer.modules.volumerendering.logic()
-    displayNode = volumeRenderingLogic.GetFirstVolumeRenderingDisplayNode(selectedNode)
-    if displayNode is None:
-      selectedNode.CreateDefaultDisplayNodes()
-      slicer.modules.volumerendering.logic().CreateDefaultVolumeRenderingNodes(selectedNode)
-      displayNode = volumeRenderingLogic.GetFirstVolumeRenderingDisplayNode(selectedNode)
+  def onSpineModelSelected(self, selectedNode):
+    if self._parameterNode is None or self._updatingGUIFromParameterNode:
+      return
 
-    displayNode.SetViewNodeIDs([])  # Empty list means all views
-    '''
-
-    # self.resetViews()
+    if selectedNode is None:
+      self._parameterNode.SetNodeReferenceID(self.logic.SPINE_MODEL, "")
+    else:
+      self._parameterNode.SetNodeReferenceID(self.logic.SPINE_MODEL, selectedNode.GetID())
 
   def onNeedleTransformSelected(self, selectedNode):
     if self._parameterNode is None or self._updatingGUIFromParameterNode:
@@ -352,15 +342,6 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.logic.updateTransformFromParameterNode()
 
     self.logic.ResliceDriverToScrew(selectedNode.GetID())
-
-  # Scene selection
-  def onPreviousButton(self):
-    self.updateParameterNodeFromGUI()
-    self.logic.previousScene()
-
-  def onNextButton(self):
-    self.updateParameterNodeFromGUI()
-    self.logic.nextScene()
 
   def onResetNeedleButton(self):
     '''
@@ -465,16 +446,13 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     settings = slicer.app.userSettings()
     settings.setValue(self.logic.RESULTS_SAVE_DIRECTORY_SETTING, directory)
     
+  def onUserIDChanged(self, userID):
+    # update the user ID in the parameter node
+    self._parameterNode.SetParameter(self.logic.USER_ID, userID)
+  
   def onParticipantIDChanged(self, participantID):
     # update the participant ID in the parameter node
-    self._parameterNode.SetParameter(self.logic.PARTICIPANT_ID, participantID)
-
-  def onTaskChanged(self, taskPath):
-    # Get the filename from the taskPath without the extension
-    taskName = os.path.splitext(os.path.basename(taskPath))[0]
-    self._parameterNode.SetParameter(self.logic.TASK_NAME, taskName)
-    settings = slicer.app.userSettings()
-    settings.setValue(self.logic.CURRENT_TASK_SETTING, taskPath)
+    self._parameterNode.SetParameter(self.logic.PARTICIPANT_ID, participantID) 
 
   def onSaveButton(self):
     self.logic.saveResults()
@@ -490,8 +468,6 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     self.ui.needleTransformComboBox.setCurrentNode(screwTransformNode)
     # set the screw parameters as an attribute of the model
     screwNode.SetAttribute("ScrewNumber", screwName)
-
-
 
 
 #
@@ -513,9 +489,8 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
   ROTATE_S = "RotateS"
 
   RESULTS_SAVE_DIRECTORY_SETTING = 'SpineGuidance/ResultsSaveDirectory'
+  USER_ID = "UserID"
   PARTICIPANT_ID = "ParticipantID"
-  CURRENT_TASK_SETTING = 'SpineGuidance/CurrentTask'
-  TASK_NAME = "TaskName"
 
   ############ ALI ##############
   screwNumber = 0
@@ -688,7 +663,7 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     Save the results to a file:
     - NeedleToRasTransform
     Save in format:
-    NeedleToRas_TaskName_ParticipantID.h5
+    NeedleToRas_ParticipantID.h5
     '''
     # Get the parameter node
     parameterNode = self.getParameterNode()
@@ -697,14 +672,12 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     needleToRasTransformNode = parameterNode.GetNodeReference(self.NEEDLE_TO_RAS_TRANSFORM)
     
     # Format the name of the file
-    # Get the task name
-    taskName = parameterNode.GetParameter(self.TASK_NAME)
     # Get the participant ID
     participantID = parameterNode.GetParameter(self.PARTICIPANT_ID)
     # Get the transform name
     transformName = needleToRasTransformNode.GetName()
     # Get the file name
-    fileName = transformName + "_" + taskName + "_" + participantID + ".h5"
+    fileName = transformName + "_" + participantID + ".h5"
     # Get the Save Directory from slicer settings
     settings = slicer.app.userSettings()
     saveDirectory = settings.value(self.RESULTS_SAVE_DIRECTORY_SETTING)
