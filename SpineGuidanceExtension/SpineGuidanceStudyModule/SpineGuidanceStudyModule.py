@@ -95,9 +95,7 @@ class SpineGuidanceStudyModuleWidget(ScriptedLoadableModuleWidget, VTKObservatio
     
     # SCREW SELECTION
     # The screw length and diameter are initizalied in the wigit viewer directly
-    ##################### ALI ####################
     self.ui.loadModelButton.connect('clicked(bool)', self.onLoadModelButtonClicked)
-    ################## FIN ALI ####################
     self.ui.needleTransformComboBox.connect('currentNodeChanged(vtkMRMLNode*)', self.onNeedleTransformSelected)
 
 
@@ -497,10 +495,7 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
   RESULTS_SAVE_DIRECTORY_SETTING = 'SpineGuidance/ResultsSaveDirectory'
   USER_ID = "UserID"
   PARTICIPANT_ID = "ParticipantID"
-
-  ############ ALI ##############
   screwNumber = 0
-  ########### FIN ALI ###########
 
   def __init__(self):
     """
@@ -537,60 +532,15 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
   def setupScene(self):
     parameterNode = self.getParameterNode()
 
-    # NeedleToRasTransform
-
     # If NeedleToRasTransform is not in the scene, create and add it
     needleToRasTransform = slicer.util.getFirstNodeByName(self.NEEDLE_TO_RAS_TRANSFORM)  # ***
     if needleToRasTransform is None:
       needleToRasTransform = slicer.mrmlScene.AddNewNodeByClass('vtkMRMLLinearTransformNode', self.NEEDLE_TO_RAS_TRANSFORM)
       parameterNode.SetNodeReferenceID(self.NEEDLE_TO_RAS_TRANSFORM, needleToRasTransform.GetID())
 
-    # NeedleModel
-
-    # If NeedleModel is not in the scene, create and add it
-    '''
-    needleModel = slicer.util.getFirstNodeByName(self.NEEDLE_MODEL)
-    if needleModel is None:
-      createModelsLogic = slicer.modules.createmodels.logic()
-      # creates a needle model with 4 arguments: Length, radius, tip radius, and DepthMarkers
-      needleModel = createModelsLogic.CreateNeedle(80, 1.0, 2.5, 0)
-      needleModel.SetName(self.NEEDLE_MODEL)
-      parameterNode.SetNodeReferenceID(self.NEEDLE_MODEL, needleModel.GetID())
-    # If not already transformed, add it to the NeedleToRas transform
-    needleModelTransform = needleModel.GetParentTransformNode()
-    if needleModelTransform is None:
-      needleModel.SetAndObserveTransformNodeID(needleToRasTransform.GetID())
-
-    # NeedleTip pointlist
-
-    # If pointList_NeedleTip is not in the scene, create and add it
-    pointList_NeedleTip = parameterNode.GetNodeReference(self.NEEDLE_TIP)
-    if pointList_NeedleTip == None:
-      # Create a point list for the needle tip in reference coordinates
-      pointList_NeedleTip = slicer.vtkMRMLMarkupsFiducialNode()
-      pointList_NeedleTip.SetName("pointList_NeedleTip")
-      slicer.mrmlScene.AddNode(pointList_NeedleTip)
-      # Set the role of the point list
-      parameterNode.SetNodeReferenceID(self.NEEDLE_TIP, pointList_NeedleTip.GetID())
-    # Add a point to the point list
-    if pointList_NeedleTip.GetNumberOfControlPoints() == 0:
-      pointList_NeedleTip.AddControlPoint(np.array([0, 0, 0]))
-      pointList_NeedleTip.SetNthControlPointLabel(0, "origin_Tip")
-
-    pointList_NeedleTip.GetDisplayNode().SetVisibility(False)  # Hide needle tip markup by default
-
-    # If not already transformed, add it to the NeedleToRas transform
-    pointList_NeedleTipTransform = pointList_NeedleTip.GetParentTransformNode()
-    if pointList_NeedleTipTransform is None:
-      pointList_NeedleTip.SetAndObserveTransformNodeID(needleToRasTransform.GetID())
-      '''
-
-
-    ##################### ALI ######################
     t90Node=slicer.vtkMRMLLinearTransformNode()
     t90Node.SetName("RotationT")
     slicer.mrmlScene.AddNode(t90Node)
-    #################### FIN ALI ###################
 
   def previousScene(self):
     pass
@@ -698,7 +648,6 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     slicer.util.saveScene(os.path.join(saveDirectory, fileName))
 
 
-  ################### ALI ###################
   def LoadScrewModel(self, screwFileNameWOExt, transformName):
     t90Node = slicer.util.getFirstNodeByName("RotationT")
     t90NodeName = t90Node.GetName()
@@ -707,7 +656,7 @@ class SpineGuidanceStudyModuleLogic(ScriptedLoadableModuleLogic):
     previousScrew = slicer.util.getFirstNodeByName(screwName)
     if (previousScrew is not None):
       slicer.mrmlScene.RemoveNode(previousScrew)
-    screwFileName = screwFileNameWOExt + ".stl"
+    screwFileName = screwFileNameWOExt + ".obj"
     screwNode = self.LoadModelFromFile(screwFileName, [0,0.7251529,0.945098], True)
     rotationT = vtk.vtkTransform()
     rotationT.RotateX(-90)
